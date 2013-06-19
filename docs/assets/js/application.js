@@ -9,7 +9,7 @@
     var $window = $(window)
 
     // Disable certain links in docs
-    $('section [href^=#]').click(function (e) {
+    $('[href=#]').click(function (e) {
       e.preventDefault()
     })
 
@@ -26,14 +26,6 @@
     setTimeout(function () {
       $('.bs-top').affix()
     }, 100)
-
-    // add tipsies to grid for scaffolding
-    if ($('#grid-system').length) {
-      $('#grid-system').tooltip({
-          selector: '.show-grid > [class*="span"]'
-        , title: function () { return $(this).width() + 'px' }
-      })
-    }
 
     // tooltip demo
     $('.tooltip-demo').tooltip({
@@ -71,10 +63,10 @@
     // javascript build logic
     var inputsComponent = $("#less input")
       , inputsPlugin = $("#plugins input")
-      , inputsVariables = $("#variables input")
+      , inputsVariables = $("#less-variables input")
 
     // toggle all plugin checkboxes
-    $('#components .toggle').on('click', function (e) {
+    $('#less .toggle').on('click', function (e) {
       e.preventDefault()
       inputsComponent.prop('checked', !inputsComponent.is(':checked'))
     })
@@ -84,15 +76,16 @@
       inputsPlugin.prop('checked', !inputsPlugin.is(':checked'))
     })
 
-    $('#variables .toggle').on('click', function (e) {
+    $('#less-variables .toggle').on('click', function (e) {
       e.preventDefault()
       inputsVariables.val('')
     })
 
     // request built javascript
-    $('.download-btn .btn').on('click', function () {
+    $('.bs-customize-download .btn').on('click', function (e) {
+      e.preventDefault()
 
-      var css = $("#components input:checked")
+      var css = $("#less input:checked")
             .map(function () { return this.value })
             .toArray()
         , js = $("#plugins input:checked")
@@ -101,14 +94,14 @@
         , vars = {}
         , img = ['glyphicons-halflings.png', 'glyphicons-halflings-white.png']
 
-    $("#variables input")
-      .each(function () {
-        $(this).val() && (vars[ $(this).prev().text() ] = $(this).val())
+      $("#less-variables input")
+        .each(function () {
+          $(this).val() && (vars[ $(this).prev().text() ] = $(this).val())
       })
 
       $.ajax({
         type: 'POST'
-      , url: /\?dev/.test(window.location) ? 'http://localhost:3000' : 'http://bootstrap.herokuapp.com'
+      , url: /localhost/.test(window.location) ? 'http://localhost:9001' : 'http://bootstrap.herokuapp.com'
       , dataType: 'jsonpi'
       , params: {
           js: js
